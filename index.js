@@ -22,6 +22,7 @@ exports.handler = async function () {
     if (newHouseAmendments.length > 0) {
       await sendEmail(newHouseAmendments, "house");
     }
+    return "Success!";
   } catch (e) {
     console.log("ERROR: ");
     console.error(e);
