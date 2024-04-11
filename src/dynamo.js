@@ -58,7 +58,7 @@ const processAmendments = async (amendments, chamber) => {
   const newAmendments = [];
   try {
     for (const amendment of amendments) {
-      const amendmentData = await getAmendment(amendment.lcoNumber);
+      const amendmentData = await getAmendment(amendment.lcoNumber, chamber);
       if (!amendmentData) {
         console.log(
           `Amendment does not exist in ${tableNamesMap[chamber]} table: ${amendment.lcoNumber}`
