@@ -9,7 +9,7 @@ const sendEmail = async (amendments, chamber) => {
   const command = new SendEmailCommand({
     FromEmailAddress: "example@example.com",
     Destination: {
-      ToAddresses: ["example@example.com"],
+      ToAddresses: ["example@example.com", "example@example.com"],
     },
     Content: {
       Simple: {
