@@ -23,6 +23,7 @@ exports.handler = async function () {
       await sendEmail(newHouseAmendments, "house");
     }
   } catch (e) {
+    console.log("ERROR: ");
     console.error(e);
   }
 };

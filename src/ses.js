@@ -30,6 +30,7 @@ const sendEmail = async (amendments, chamber) => {
     console.log("Email sent");
     return result;
   } catch (err) {
+    console.log("Error sending email");
     console.error(err);
   }
 };

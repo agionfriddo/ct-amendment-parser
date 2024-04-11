@@ -55,7 +55,7 @@ const getAmendment = async (lcoNumber) => {
 };
 
 const processAmendments = async (amendments, chamber) => {
-  const newSenateAmendments = [];
+  const newAmendments = [];
   try {
     for (const amendment of amendments) {
       const amendmentData = await getAmendment(amendment.lcoNumber);
@@ -63,7 +63,7 @@ const processAmendments = async (amendments, chamber) => {
         console.log(
           `Amendment does not exist in ${tableNamesMap[chamber]} table: ${amendment.lcoNumber}`
         );
-        newSenateAmendments.push(amendment);
+        newAmendments.push(amendment);
         await writeAmendment(amendment, chamber);
         console.log(
           `Successfully wrote ammendment ${amendment.lcoNumber} to table ${tableNamesMap[chamber]}`
@@ -74,9 +74,10 @@ const processAmendments = async (amendments, chamber) => {
         );
       }
     }
-    return newSenateAmendments;
+    return newAmendments;
   } catch (err) {
-    console.error(errs);
+    console.log("Error processing amendments to dynamoDB: ");
+    console.error(err);
   }
 };
 

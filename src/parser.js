@@ -15,12 +15,18 @@ filterOptions.append("optSortby", "D");
 filterOptions.append("optSortOrder", "Asc");
 
 const fetchHTML = async (chamber) => {
+  console.log("fetching html");
   const endpoint = chamber === "house" ? HOUSE_ENDPOINT : SENATE_ENDPOINT;
-  const response = await axios.post(endpoint, filterOptions, {
-    "content-type": "application/x-www-form-urlencoded",
-    httpsAgent,
-  });
-  return response.data;
+  try {
+    const response = await axios.post(endpoint, filterOptions, {
+      "content-type": "application/x-www-form-urlencoded",
+      httpsAgent,
+    });
+    return response.data;
+  } catch (e) {
+    console.log("error fetching html");
+    console.error(e);
+  }
 };
 
 const parseBillsFromHTML = (html) => {
