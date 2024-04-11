@@ -1,7 +1,4 @@
 const generateHTML = (amendments, chamber) => {
-  if (amendments.length === 0) {
-    return `<body><h1>No new ${chamber} amendments</h1></body>`;
-  }
   return `<body>
     <h1>New ${chamber} amendments</h1>
     <table>

@@ -16,10 +16,12 @@ const main = async () => {
       "house"
     );
 
-    console.log(newSenateAmendments);
-    console.log(newHouseAmendments);
-
-    await sendEmail(newSenateAmendments, "senate");
+    if (newSenateAmendments.length > 0) {
+      await sendEmail(newSenateAmendments, "senate");
+    }
+    if (newHouseAmendments.length > 0) {
+      await sendEmail(newHouseAmendments, "house");
+    }
   } catch (e) {
     console.error(e);
   }

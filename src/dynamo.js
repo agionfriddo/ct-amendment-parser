@@ -61,7 +61,7 @@ const processAmendments = async (amendments, chamber) => {
       const amendmentData = await getAmendment(amendment.lcoNumber);
       if (!amendmentData) {
         console.log(
-          `Amendment does not exist in table: ${amendment.lcoNumber}`
+          `Amendment does not exist in ${tableNamesMap[chamber]} table: ${amendment.lcoNumber}`
         );
         newSenateAmendments.push(amendment);
         await writeAmendment(amendment, chamber);
@@ -70,7 +70,7 @@ const processAmendments = async (amendments, chamber) => {
         );
       } else {
         console.log(
-          `Amendment already exists in table: ${amendment.lcoNumber}`
+          `Amendment already exists in ${tableNamesMap[chamber]}: ${amendment.lcoNumber}`
         );
       }
     }

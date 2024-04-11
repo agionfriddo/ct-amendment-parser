@@ -27,6 +27,7 @@ const sendEmail = async (amendments, chamber) => {
 
   try {
     const result = await client.send(command);
+    console.log("Email sent");
     return result;
   } catch (err) {
     console.error(err);
