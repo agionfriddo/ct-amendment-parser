@@ -1,0 +1,19 @@
+{
+  "name": "ct-session-tracker",
+  "version": "1.0.0",
+  "description": "A tracker for connecticut state assembly",
+  "main": "ct-session-tracker.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "Andrew Gionfriddo <example@example.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.552.0",
+    "@aws-sdk/client-sesv2": "^3.552.0",
+    "add": "^2.0.6",
+    "axios": "^1.6.8",
+    "cheerio": "^1.0.0-rc.12",
+    "uuid": "^9.0.1"
+  }
+}
