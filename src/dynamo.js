@@ -38,9 +38,9 @@ const writeAmendment = async (data, chamber) => {
   }
 };
 
-const getAmendment = async (lcoNumber) => {
+const getAmendment = async (lcoNumber, chamber) => {
   const command = new GetItemCommand({
-    TableName: SENATE_AMENDMENTS_TABLE,
+    TableName: tableNamesMap[chamber],
     Key: {
       lcoNumber: { S: lcoNumber },
     },
