@@ -1,6 +1,5 @@
 const {
   DynamoDBClient,
-  PutItemCommand,
   ScanCommand,
   BatchWriteItemCommand,
 } = require("@aws-sdk/client-dynamodb");
