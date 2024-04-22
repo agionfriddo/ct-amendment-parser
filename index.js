@@ -2,7 +2,7 @@ const { processAmendments } = require("./src/dynamo");
 const { fetchAndParse } = require("./src/parser");
 const { sendEmail } = require("./src/ses");
 
-exports.handler = async function () {
+async function main() {
   try {
     const senateAmendments = await fetchAndParse("senate");
     const houseAmendments = await fetchAndParse("house");
@@ -29,4 +29,8 @@ exports.handler = async function () {
     console.log("ERROR: ");
     console.error(e);
   }
-};
+}
+
+exports.handler = main;
+
+// main();

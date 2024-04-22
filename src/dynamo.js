@@ -1,7 +1,8 @@
 const {
   DynamoDBClient,
   PutItemCommand,
-  GetItemCommand,
+  ScanCommand,
+  BatchWriteItemCommand,
 } = require("@aws-sdk/client-dynamodb");
 const {
   REGION,
@@ -16,17 +17,25 @@ const tableNamesMap = {
 
 const client = new DynamoDBClient({ region: REGION });
 
-const writeAmendment = async (data, chamber) => {
+const writeAmendments = async (data, chamber) => {
   // Write data to DynamoDB
-  const command = new PutItemCommand({
-    TableName: tableNamesMap[chamber],
-    Item: {
-      calNumber: { S: data.calNumber },
-      lcoNumber: { S: data.lcoNumber },
-      lcoLink: { S: data.lcoLink },
-      billNumber: { S: data.billNumber },
-      billLink: { S: data.billLink },
-      date: { S: data.date },
+
+  const dataToWrite = data.map((amendment) => ({
+    PutRequest: {
+      Item: {
+        billNumber: { S: amendment.billNumber },
+        date: { S: amendment.date },
+        lcoLink: { S: amendment.lcoLink },
+        billLink: { S: amendment.billLink },
+        lcoNumber: { S: amendment.lcoNumber },
+        calNumber: { S: amendment.calNumber },
+      },
+    },
+  }));
+
+  const command = new BatchWriteItemCommand({
+    RequestItems: {
+      [tableNamesMap[chamber]]: dataToWrite,
     },
   });
 
@@ -34,45 +43,53 @@ const writeAmendment = async (data, chamber) => {
     const result = await client.send(command);
     return result;
   } catch (err) {
+    console.error("Error writing amendments to DynamoDB");
     console.error(err);
   }
 };
 
-const getAmendment = async (lcoNumber, chamber) => {
-  const command = new GetItemCommand({
+const batchGetAmendments = async (chamber) => {
+  const command = new ScanCommand({
     TableName: tableNamesMap[chamber],
-    Key: {
-      lcoNumber: { S: lcoNumber },
-    },
   });
 
   try {
     const result = await client.send(command);
-    return result.Item;
+    return result.Items.map((item) => ({
+      billNumber: item.billNumber.S,
+      date: item.date.S,
+      lcoLink: item.lcoLink.S,
+      billLink: item.billLink.S,
+      lcoNumber: item.lcoNumber.S,
+      calNumber: item.calNumber.S,
+    }));
   } catch (err) {
     console.error(err);
   }
 };
 
-const processAmendments = async (amendments, chamber) => {
-  const newAmendments = [];
+const processAmendments = async (allAmendments, chamber) => {
   try {
-    for (const amendment of amendments) {
-      const amendmentData = await getAmendment(amendment.lcoNumber, chamber);
-      if (!amendmentData) {
-        console.log(
-          `Amendment does not exist in ${tableNamesMap[chamber]} table: ${amendment.lcoNumber}`
-        );
-        newAmendments.push(amendment);
-        await writeAmendment(amendment, chamber);
-        console.log(
-          `Successfully wrote ammendment ${amendment.lcoNumber} to table ${tableNamesMap[chamber]}`
-        );
-      } else {
-        console.log(
-          `Amendment already exists in ${tableNamesMap[chamber]}: ${amendment.lcoNumber}`
-        );
+    const existingAmendments = await batchGetAmendments(chamber);
+    const newAmendments = allAmendments.filter(
+      (amendment) =>
+        !existingAmendments.some(
+          (existingAmendment) =>
+            existingAmendment.lcoNumber === amendment.lcoNumber
+        )
+    );
+    console.log(
+      `Found ${newAmendments.length} new amendments for the ${chamber}`
+    );
+    if (newAmendments.length > 0) {
+      const chunksNeeded = Math.ceil(newAmendments.length / 25);
+      for (let i = 0; i < chunksNeeded; i++) {
+        const chunk = newAmendments.slice(i * 25, (i + 1) * 25);
+        await writeAmendments(chunk, chamber);
       }
+      console.log("Wrote new amendments to DynamoDB");
+    } else {
+      console.log("Skipping write because there are no new amendments");
     }
     return newAmendments;
   } catch (err) {
