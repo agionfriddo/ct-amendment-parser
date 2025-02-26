@@ -9,8 +9,7 @@ export async function middleware(request: NextRequest) {
   // Define protected paths
   const isProtectedPath =
     request.nextUrl.pathname.startsWith("/dashboard") ||
-    request.nextUrl.pathname.startsWith("/api/amendments") ||
-    request.nextUrl.pathname.startsWith("/api/pdf-text");
+    request.nextUrl.pathname.startsWith("/api/amendments");
 
   // Define auth paths
   const isAuthPath = request.nextUrl.pathname.startsWith("/login");
@@ -32,10 +31,5 @@ export async function middleware(request: NextRequest) {
 
 // Configure the paths that should be matched by the middleware
 export const config = {
-  matcher: [
-    "/dashboard/:path*",
-    "/api/amendments/:path*",
-    "/api/pdf-text/:path*",
-    "/login",
-  ],
+  matcher: ["/dashboard/:path*", "/api/amendments/:path*", "/login"],
 };

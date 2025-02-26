@@ -15,7 +15,7 @@ export default function PdfViewer({ url }: PdfViewerProps) {
   const defaultLayoutPluginInstance = defaultLayoutPlugin();
 
   // Create proxied URL to avoid CORS issues
-  const proxiedUrl = `/api/proxy?url=${encodeURIComponent(url)}`;
+  const proxiedUrl = `/api/pdf-proxy?url=${encodeURIComponent(url)}`;
 
   useEffect(() => {
     setIsClient(true);
