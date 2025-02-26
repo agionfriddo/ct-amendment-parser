@@ -16,6 +16,7 @@
     "@react-pdf-viewer/scroll-mode": "^3.12.0",
     "@types/diff": "^7.0.1",
     "axios": "^1.7.9",
+    "buffer": "^6.0.3",
     "diff": "^7.0.0",
     "next": "15.1.7",
     "next-auth": "^4.24.11",
