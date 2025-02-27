@@ -11,8 +11,8 @@ type ChamberFilter = "all" | "senate" | "house" | "both";
 export default function ByBillPage() {
   const { senateAmendments, houseAmendments, loading, error } = useAmendments();
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortField, setSortField] = useState<SortField>("billNumber");
-  const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
+  const [sortField, setSortField] = useState<SortField>("latestDate");
+  const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
   const [chamberFilter, setChamberFilter] = useState<ChamberFilter>("all");
 
   // Group amendments by bill number
@@ -170,7 +170,7 @@ export default function ByBillPage() {
             </label>
             <select
               id="chamber"
-              className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-black"
               value={chamberFilter}
               onChange={(e) =>
                 setChamberFilter(e.target.value as ChamberFilter)
