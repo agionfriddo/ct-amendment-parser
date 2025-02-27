@@ -17,7 +17,7 @@ export default function AmendmentList({
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
   const [sortField, setSortField] = useState<keyof Amendment>("date");
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [selectedAmendments, setSelectedAmendments] = useState<string[]>([]);
 
   // Filter amendments based on search term

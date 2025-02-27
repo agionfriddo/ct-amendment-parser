@@ -123,7 +123,15 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       </nav>
 
       <main>
-        <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">{children}</div>
+        <div className="w-full py-6">
+          {pathname.includes("/bill/") && pathname.includes("/compare") ? (
+            // For comparison pages, use full width with no padding
+            <div className="w-full">{children}</div>
+          ) : (
+            // For other dashboard pages, keep the standard container
+            <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">{children}</div>
+          )}
+        </div>
       </main>
     </div>
   );
