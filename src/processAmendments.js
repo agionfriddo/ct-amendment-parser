@@ -8,6 +8,7 @@ const {
   SENATE_AMENDMENTS_TABLE,
   HOUSE_AMENDMENTS_TABLE,
 } = require("./constants");
+const { processNewBill } = require("./bills");
 
 const tableNamesMap = {
   senate: SENATE_AMENDMENTS_TABLE,
@@ -81,6 +82,12 @@ const processAmendments = async (allAmendments, chamber) => {
       `Found ${newAmendments.length} new amendments for the ${chamber}`
     );
     if (newAmendments.length > 0) {
+      // Process new bills first
+      for (const amendment of newAmendments) {
+        await processNewBill(amendment.billNumber, amendment.billLink);
+      }
+
+      // Then write amendments to DynamoDB
       const chunksNeeded = Math.ceil(newAmendments.length / 25);
       for (let i = 0; i < chunksNeeded; i++) {
         const chunk = newAmendments.slice(i * 25, (i + 1) * 25);
