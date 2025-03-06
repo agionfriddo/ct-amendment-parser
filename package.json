@@ -4,7 +4,8 @@
   "description": "A tracker for connecticut state assembly",
   "main": "ct-session-tracker.js",
   "scripts": {
-    "test": "test"
+    "test": "test",
+    "start": "node index.js"
   },
   "author": "Andrew Gionfriddo <example@example.com>",
   "license": "ISC",

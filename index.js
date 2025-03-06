@@ -3,6 +3,7 @@ const { fetchAndParse } = require("./src/parser");
 const { sendEmail } = require("./src/ses");
 
 async function main() {
+  console.log("Starting...");
   try {
     const senateAmendments = await fetchAndParse("senate");
     const houseAmendments = await fetchAndParse("house");
