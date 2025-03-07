@@ -36,8 +36,8 @@ const scrapeBillPDFs = async (billLink) => {
     const $ = cheerio.load(response.data);
     const pdfLinks = [];
 
-    // Find the table with summary="Status of bills"
-    $('table[summary="Status of bills"] tbody tr').each((_, row) => {
+    // Find the table containing "Text of Bill"
+    $('table:contains("Text of Bill") tbody tr').each((_, row) => {
       // Get all links in the row
       $(row)
         .find("a")
