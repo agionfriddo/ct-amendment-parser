@@ -1,3 +1,6 @@
+// Load environment variables
+require("dotenv").config();
+
 const { processAmendments } = require("./src/processAmendments");
 const { fetchAndParse } = require("./src/amendmentParser");
 const { sendEmail } = require("./src/mailer");

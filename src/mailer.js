@@ -5,11 +5,22 @@ const { generateHTML } = require("./htmlGenerator");
 const client = new SESv2Client({ region: REGION });
 
 const sendEmail = async (amendments, chamber) => {
+  // Get email addresses from environment variables
+  const toEmails = process.env.TO_EMAILS
+    ? process.env.TO_EMAILS.split(",")
+    : [];
+  const fromEmail = process.env.FROM_EMAIL || "example@example.com";
+
+  if (toEmails.length === 0) {
+    console.log("No recipient emails configured. Skipping email send.");
+    return;
+  }
+
   // Send email
   const command = new SendEmailCommand({
-    FromEmailAddress: "example@example.com",
+    FromEmailAddress: fromEmail,
     Destination: {
-      ToAddresses: ["example@example.com", "example@example.com"],
+      ToAddresses: toEmails,
     },
     Content: {
       Simple: {
