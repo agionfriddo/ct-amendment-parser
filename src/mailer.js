@@ -9,7 +9,12 @@ const sendEmail = async (amendments, chamber) => {
   const toEmails = process.env.TO_EMAILS
     ? process.env.TO_EMAILS.split(",")
     : [];
-  const fromEmail = process.env.FROM_EMAIL || "example@example.com";
+  const fromEmail = process.env.FROM_EMAIL;
+
+  if (!fromEmail) {
+    console.log("No sender email configured. Skipping email send.");
+    return;
+  }
 
   if (toEmails.length === 0) {
     console.log("No recipient emails configured. Skipping email send.");
