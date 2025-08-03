@@ -4,7 +4,7 @@
   "description": "A tracker for connecticut state assembly",
   "main": "ct-session-tracker.js",
   "scripts": {
-    "test": "test",
+    "test": "jest",
     "start": "node index.js"
   },
   "author": "Andrew Gionfriddo",
@@ -17,5 +17,8 @@
     "cheerio": "^1.0.0-rc.12",
     "dotenv": "^17.2.0",
     "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
   }
 }

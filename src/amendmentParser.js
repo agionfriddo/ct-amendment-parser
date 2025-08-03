@@ -47,6 +47,9 @@ const parseBillsFromHTML = (html) => {
 
 const fetchAndParse = async (chamber) => {
   const html = await fetchHTML(chamber);
+  if (!html) {
+    return undefined;
+  }
   const bills = parseBillsFromHTML(html);
 
   return bills.filter(
@@ -54,4 +57,4 @@ const fetchAndParse = async (chamber) => {
   );
 };
 
-module.exports = { fetchAndParse };
+module.exports = { fetchAndParse, parseBillsFromHTML };

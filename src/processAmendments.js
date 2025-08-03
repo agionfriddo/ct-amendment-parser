@@ -65,6 +65,7 @@ const batchGetAmendments = async (chamber) => {
     }));
   } catch (err) {
     console.error(err);
+    return [];
   }
 };
 
