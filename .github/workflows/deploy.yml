@@ -68,13 +68,20 @@ jobs:
           --zip-file fileb://lambda-deployment.zip
 
     - name: Update function configuration
-      env:
-        TO_EMAILS: ${{ secrets.TO_EMAILS }}
-        FROM_EMAIL: ${{ secrets.FROM_EMAIL }}
       run: |
+        # Create environment variables JSON file
+        cat > env-vars.json << EOF
+        {
+          "Variables": {
+            "TO_EMAILS": "${{ secrets.TO_EMAILS }}",
+            "FROM_EMAIL": "${{ secrets.FROM_EMAIL }}"
+          }
+        }
+        EOF
+        
         aws lambda update-function-configuration \
           --function-name ${{ env.LAMBDA_FUNCTION_NAME }} \
-          --environment Variables="{\"TO_EMAILS\":\"${TO_EMAILS}\",\"FROM_EMAIL\":\"${FROM_EMAIL}\"}" \
+          --environment file://env-vars.json \
           --timeout 300 \
           --memory-size 512
 
