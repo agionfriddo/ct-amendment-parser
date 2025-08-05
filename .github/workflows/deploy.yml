@@ -7,7 +7,7 @@ on:
 
 env:
   AWS_REGION: us-east-1
-  LAMBDA_FUNCTION_NAME: ct-session-tracker
+  LAMBDA_FUNCTION_NAME: amendmentCron
 
 jobs:
   test:

@@ -4,7 +4,7 @@ This project uses GitHub Actions to automatically deploy to AWS Lambda when code
 
 ## Prerequisites
 
-1. **AWS Lambda function** already created with the name `ct-session-tracker`
+1. **AWS Lambda function** already created with the name `amendmentCron`
 2. **IAM user** with appropriate permissions for Lambda deployment  
 3. **GitHub repository secrets** configured
 4. **DynamoDB tables** created (2025-senate-amendments, 2025-house-amendments, 2025-bills)
@@ -52,7 +52,7 @@ Create an IAM user for GitHub Actions deployment with the following policy:
                 "lambda:PublishVersion",
                 "lambda:GetFunction"
             ],
-            "Resource": "arn:aws:lambda:us-east-1:*:function:ct-session-tracker"
+            "Resource": "arn:aws:lambda:us-east-1:*:function:amendmentCron"
         }
     ]
 }

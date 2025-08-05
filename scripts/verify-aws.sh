@@ -5,7 +5,7 @@
 
 set -e
 
-FUNCTION_NAME="ct-session-tracker"
+FUNCTION_NAME="amendmentCron"
 REGION="us-east-1"
 
 echo "🔍 Verifying AWS resources for CT Session Tracker..."

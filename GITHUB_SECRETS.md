@@ -45,7 +45,7 @@ Create an IAM user specifically for GitHub Actions with this policy:
                 "lambda:PublishVersion",
                 "lambda:GetFunction"
             ],
-            "Resource": "arn:aws:lambda:us-east-1:*:function:ct-session-tracker"
+            "Resource": "arn:aws:lambda:us-east-1:*:function:amendmentCron"
         }
     ]
 }
