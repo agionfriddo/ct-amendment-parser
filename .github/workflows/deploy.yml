@@ -67,6 +67,11 @@ jobs:
           --function-name ${{ env.LAMBDA_FUNCTION_NAME }} \
           --zip-file fileb://lambda-deployment.zip
 
+    - name: Wait for code update to complete
+      run: |
+        aws lambda wait function-updated \
+          --function-name ${{ env.LAMBDA_FUNCTION_NAME }}
+
     - name: Update function configuration
       run: |
         # Create environment variables JSON file
