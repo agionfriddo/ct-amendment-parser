@@ -2,9 +2,10 @@
   "name": "ct-session-tracker",
   "version": "1.0.0",
   "description": "A tracker for connecticut state assembly",
-  "main": "ct-session-tracker.js",
+  "type": "module",
+  "main": "main.js",
   "scripts": {
-    "test": "jest",
+    "test": "node --experimental-vm-modules node_modules/.bin/jest",
     "start": "node index.js"
   },
   "author": "Andrew Gionfriddo",

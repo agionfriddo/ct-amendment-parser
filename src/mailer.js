@@ -1,10 +1,10 @@
-const { SESv2Client, SendEmailCommand } = require("@aws-sdk/client-sesv2");
-const { REGION } = require("./constants");
-const { generateHTML } = require("./htmlGenerator");
+import { SESv2Client, SendEmailCommand } from "@aws-sdk/client-sesv2";
+import { REGION } from "./constants.js";
+import { generateHTML } from "./htmlGenerator.js";
 
 const client = new SESv2Client({ region: REGION });
 
-const sendEmail = async (amendments, chamber) => {
+export const sendEmail = async (amendments, chamber) => {
   // Get email addresses from environment variables
   const toEmails = process.env.TO_EMAILS
     ? process.env.TO_EMAILS.split(",")
@@ -50,5 +50,3 @@ const sendEmail = async (amendments, chamber) => {
     console.error(err);
   }
 };
-
-module.exports = { sendEmail };

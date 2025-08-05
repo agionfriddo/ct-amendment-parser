@@ -1,14 +1,14 @@
-const {
+import {
   DynamoDBClient,
   ScanCommand,
   BatchWriteItemCommand,
-} = require("@aws-sdk/client-dynamodb");
-const {
+} from "@aws-sdk/client-dynamodb";
+import {
   REGION,
   SENATE_AMENDMENTS_TABLE,
   HOUSE_AMENDMENTS_TABLE,
-} = require("./constants");
-const { processNewBill } = require("./bills");
+} from "./constants.js";
+import { processNewBill } from "./bills.js";
 
 const tableNamesMap = {
   senate: SENATE_AMENDMENTS_TABLE,
@@ -69,7 +69,7 @@ const batchGetAmendments = async (chamber) => {
   }
 };
 
-const processAmendments = async (allAmendments, chamber) => {
+export const processAmendments = async (allAmendments, chamber) => {
   try {
     const existingAmendments = await batchGetAmendments(chamber);
     const newAmendments = allAmendments.filter(
@@ -104,5 +104,3 @@ const processAmendments = async (allAmendments, chamber) => {
     console.error(err);
   }
 };
-
-module.exports = { processAmendments };

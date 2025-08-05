@@ -1,12 +1,12 @@
-const axios = require("axios");
-const cheerio = require("cheerio");
-const https = require("https");
-const {
+import axios from "axios";
+import cheerio from "cheerio";
+import https from "https";
+import {
   DynamoDBClient,
   GetItemCommand,
   PutItemCommand,
-} = require("@aws-sdk/client-dynamodb");
-const { REGION, BILLS_TABLE } = require("./constants");
+} from "@aws-sdk/client-dynamodb";
+import { REGION, BILLS_TABLE } from "./constants.js";
 
 // NOTE: This is generally bad practice, but we're not sending any sensitive data and we are fetching constant web
 // pages, so we're not too worried about it. This is just to get around the SSL certificate issue.
@@ -80,7 +80,7 @@ const writeBillToDynamo = async (billData) => {
   }
 };
 
-const processNewBill = async (billNumber, billLink) => {
+export const processNewBill = async (billNumber, billLink) => {
   try {
     const billExists = await checkBillExists(billNumber);
     if (!billExists) {
@@ -103,5 +103,3 @@ const processNewBill = async (billNumber, billLink) => {
     console.error(`Error processing bill ${billNumber}:`, err);
   }
 };
-
-module.exports = { processNewBill };

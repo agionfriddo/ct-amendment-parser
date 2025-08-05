@@ -1,11 +1,12 @@
 // Load environment variables
-require("dotenv").config();
+import dotenv from "dotenv";
+dotenv.config();
 
-const { processAmendments } = require("./src/processAmendments");
-const { fetchAndParse } = require("./src/amendmentParser");
-const { sendEmail } = require("./src/mailer");
+import { processAmendments } from "./src/processAmendments.js";
+import { fetchAndParse } from "./src/amendmentParser.js";
+import { sendEmail } from "./src/mailer.js";
 
-async function main() {
+export async function main() {
   console.log("Starting...");
   try {
     const senateAmendments = await fetchAndParse("senate");
@@ -34,7 +35,5 @@ async function main() {
     console.error(e);
   }
 }
-
-exports.handler = main;
 
 // main();

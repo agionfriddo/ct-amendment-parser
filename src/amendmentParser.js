@@ -1,6 +1,6 @@
-const axios = require("axios");
-const cheerio = require("cheerio");
-const https = require("https");
+import axios from "axios";
+import cheerio from "cheerio";
+import https from "https";
 
 // NOTE: This is generally bad practice, but we're not sending any sensitive data and we are fetching constant web
 // pages, so we're not too worried about it. This is just to get around the SSL certificate issue.
@@ -29,7 +29,7 @@ const fetchHTML = async (chamber) => {
   }
 };
 
-const parseBillsFromHTML = (html) => {
+export const parseBillsFromHTML = (html) => {
   const bills = [];
   const $ = cheerio.load(html);
   $("table tr").each((i, row) => {
@@ -45,7 +45,7 @@ const parseBillsFromHTML = (html) => {
   return bills;
 };
 
-const fetchAndParse = async (chamber) => {
+export const fetchAndParse = async (chamber) => {
   const html = await fetchHTML(chamber);
   if (!html) {
     return undefined;
@@ -56,5 +56,3 @@ const fetchAndParse = async (chamber) => {
     (bill) => bill.lcoNumber !== "" && bill.lcoNumber !== "LCO #"
   );
 };
-
-module.exports = { fetchAndParse, parseBillsFromHTML };

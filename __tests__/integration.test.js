@@ -1,41 +1,43 @@
-// Mock the AWS SDK first, before any imports
+import { jest } from "@jest/globals";
+
 const mockSend = jest.fn();
+const mockPost = jest.fn();
 
-jest.mock('axios');
-jest.mock('../src/bills');
+jest.unstable_mockModule("axios", () => ({
+  default: {
+    post: mockPost,
+  },
+}));
 
-jest.mock('@aws-sdk/client-dynamodb', () => {
-  const actualModule = jest.requireActual('@aws-sdk/client-dynamodb');
-  return {
-    ...actualModule,
-    DynamoDBClient: jest.fn(() => ({
-      send: mockSend
-    })),
-    ScanCommand: jest.fn(params => params),
-    BatchWriteItemCommand: jest.fn(params => params)
-  };
-});
+jest.unstable_mockModule("../src/bills.js", () => ({
+  processNewBill: jest.fn(),
+}));
 
-jest.mock('../src/constants', () => ({
-  SENATE_AMENDMENTS_TABLE: 'test-senate-table',
-  HOUSE_AMENDMENTS_TABLE: 'test-house-table',
-  REGION: 'us-east-1'
+jest.unstable_mockModule("@aws-sdk/client-dynamodb", () => ({
+  DynamoDBClient: jest.fn(() => ({
+    send: mockSend,
+  })),
+  ScanCommand: jest.fn((params) => params),
+  BatchWriteItemCommand: jest.fn((params) => params),
+}));
+
+jest.unstable_mockModule("../src/constants.js", () => ({
+  SENATE_AMENDMENTS_TABLE: "test-senate-table",
+  HOUSE_AMENDMENTS_TABLE: "test-house-table",
+  REGION: "us-east-1",
 }));
 
 // Now import the modules
-const { fetchAndParse } = require('../src/amendmentParser');
-const { processAmendments } = require('../src/processAmendments');
-const axios = require('axios');
-const { processNewBill } = require('../src/bills');
+const { fetchAndParse } = await import("../src/amendmentParser.js");
+const { processAmendments } = await import("../src/processAmendments.js");
+const { processNewBill } = await import("../src/bills.js");
 
-const mockedAxios = axios;
-
-describe('Integration Tests', () => {
+describe("Integration Tests", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  test('should complete full workflow: fetch, parse, and process amendments', async () => {
+  test("should complete full workflow: fetch, parse, and process amendments", async () => {
     const mockHTML = `
       <html>
         <table>
@@ -57,48 +59,51 @@ describe('Integration Tests', () => {
       </html>
     `;
 
-    mockedAxios.post.mockResolvedValue({ data: mockHTML });
-    
+    mockPost.mockResolvedValue({ data: mockHTML });
+
     mockSend
       .mockResolvedValueOnce({
         Items: [
           {
-            billNumber: { S: 'HB-1234' },
-            date: { S: '01/15/2024' },
-            lcoLink: { S: 'https://cga.ct.gov/lco1' },
-            billLink: { S: 'https://cga.ct.gov/bill1' },
-            lcoNumber: { S: 'LCO-456' },
-            calNumber: { S: '123' }
-          }
-        ]
+            billNumber: { S: "HB-1234" },
+            date: { S: "01/15/2024" },
+            lcoLink: { S: "https://cga.ct.gov/lco1" },
+            billLink: { S: "https://cga.ct.gov/bill1" },
+            lcoNumber: { S: "LCO-456" },
+            calNumber: { S: "123" },
+          },
+        ],
       })
       .mockResolvedValueOnce({ UnprocessedItems: {} });
 
     processNewBill.mockResolvedValue();
 
-    const fetchedAmendments = await fetchAndParse('senate');
-    const newAmendments = await processAmendments(fetchedAmendments, 'senate');
+    const fetchedAmendments = await fetchAndParse("senate");
+    const newAmendments = await processAmendments(fetchedAmendments, "senate");
 
     expect(fetchedAmendments).toBeInstanceOf(Array);
     expect(fetchedAmendments.length).toBeGreaterThan(0);
-    
+
     expect(newAmendments).toBeInstanceOf(Array);
     expect(newAmendments.length).toBe(1);
-    expect(newAmendments[0].lcoNumber).toBe('LCO-999');
-    
-    expect(processNewBill).toHaveBeenCalledWith('SB-5678', 'https://cga.ct.gov/bill2');
+    expect(newAmendments[0].lcoNumber).toBe("LCO-999");
+
+    expect(processNewBill).toHaveBeenCalledWith(
+      "SB-5678",
+      "https://cga.ct.gov/bill2"
+    );
     expect(mockSend).toHaveBeenCalledTimes(2);
   });
 
-  test('should handle end-to-end error scenarios', async () => {
-    mockedAxios.post.mockRejectedValue(new Error('Network error'));
+  test("should handle end-to-end error scenarios", async () => {
+    mockPost.mockRejectedValue(new Error("Network error"));
 
-    const fetchedAmendments = await fetchAndParse('senate');
-    
+    const fetchedAmendments = await fetchAndParse("senate");
+
     expect(fetchedAmendments).toBeUndefined();
   });
 
-  test('should process different chambers correctly', async () => {
+  test("should process different chambers correctly", async () => {
     const mockHTML = `
       <html>
         <table>
@@ -113,33 +118,36 @@ describe('Integration Tests', () => {
       </html>
     `;
 
-    mockedAxios.post.mockResolvedValue({ data: mockHTML });
+    mockPost.mockResolvedValue({ data: mockHTML });
     mockSend
-      .mockResolvedValueOnce({ Items: [] })  // Senate scan
-      .mockResolvedValueOnce({ UnprocessedItems: {} })  // Senate write  
-      .mockResolvedValueOnce({ Items: [] })  // House scan
-      .mockResolvedValueOnce({ UnprocessedItems: {} });  // House write
+      .mockResolvedValueOnce({ Items: [] }) // Senate scan
+      .mockResolvedValueOnce({ UnprocessedItems: {} }) // Senate write
+      .mockResolvedValueOnce({ Items: [] }) // House scan
+      .mockResolvedValueOnce({ UnprocessedItems: {} }); // House write
     processNewBill.mockResolvedValue();
 
-    const senateFetch = fetchAndParse('senate');
-    const houseFetch = fetchAndParse('house');
+    const senateFetch = fetchAndParse("senate");
+    const houseFetch = fetchAndParse("house");
 
-    const [senateAmendments, houseAmendments] = await Promise.all([senateFetch, houseFetch]);
+    const [senateAmendments, houseAmendments] = await Promise.all([
+      senateFetch,
+      houseFetch,
+    ]);
 
-    expect(mockedAxios.post).toHaveBeenCalledWith(
-      'https://cga.ct.gov/asp/CGAAmendProc/CGASenateAmendRptDisp.asp',
+    expect(mockPost).toHaveBeenCalledWith(
+      "https://cga.ct.gov/asp/CGAAmendProc/CGASenateAmendRptDisp.asp",
       expect.any(URLSearchParams),
       expect.any(Object)
     );
 
-    expect(mockedAxios.post).toHaveBeenCalledWith(
-      'https://cga.ct.gov/asp/CGAAmendProc/CGAHouseAmendRptDisp.asp',
+    expect(mockPost).toHaveBeenCalledWith(
+      "https://cga.ct.gov/asp/CGAAmendProc/CGAHouseAmendRptDisp.asp",
       expect.any(URLSearchParams),
       expect.any(Object)
     );
 
-    const senateProcessed = await processAmendments(senateAmendments, 'senate');
-    const houseProcessed = await processAmendments(houseAmendments, 'house');
+    const senateProcessed = await processAmendments(senateAmendments, "senate");
+    const houseProcessed = await processAmendments(houseAmendments, "house");
 
     expect(senateProcessed).toBeInstanceOf(Array);
     expect(houseProcessed).toBeInstanceOf(Array);

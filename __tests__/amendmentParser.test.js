@@ -1,8 +1,15 @@
-const { fetchAndParse, parseBillsFromHTML } = require('../src/amendmentParser');
-const axios = require('axios');
+import { jest } from '@jest/globals';
 
-jest.mock('axios');
-const mockedAxios = axios;
+// Mock axios first
+const mockPost = jest.fn();
+jest.unstable_mockModule('axios', () => ({
+  default: {
+    post: mockPost
+  }
+}));
+
+// Import after mocking
+const { fetchAndParse, parseBillsFromHTML } = await import('../src/amendmentParser.js');
 
 describe('amendmentParser', () => {
   describe('parseBillsFromHTML', () => {
@@ -79,11 +86,11 @@ describe('amendmentParser', () => {
         </html>
       `;
 
-      mockedAxios.post.mockResolvedValue({ data: mockHTML });
+      mockPost.mockResolvedValue({ data: mockHTML });
 
       const result = await fetchAndParse('senate');
 
-      expect(mockedAxios.post).toHaveBeenCalledWith(
+      expect(mockPost).toHaveBeenCalledWith(
         'https://cga.ct.gov/asp/CGAAmendProc/CGASenateAmendRptDisp.asp',
         expect.any(URLSearchParams),
         expect.objectContaining({
@@ -110,11 +117,11 @@ describe('amendmentParser', () => {
         </html>
       `;
 
-      mockedAxios.post.mockResolvedValue({ data: mockHTML });
+      mockPost.mockResolvedValue({ data: mockHTML });
 
       const result = await fetchAndParse('house');
 
-      expect(mockedAxios.post).toHaveBeenCalledWith(
+      expect(mockPost).toHaveBeenCalledWith(
         'https://cga.ct.gov/asp/CGAAmendProc/CGAHouseAmendRptDisp.asp',
         expect.any(URLSearchParams),
         expect.objectContaining({
@@ -154,7 +161,7 @@ describe('amendmentParser', () => {
         </html>
       `;
 
-      mockedAxios.post.mockResolvedValue({ data: mockHTML });
+      mockPost.mockResolvedValue({ data: mockHTML });
 
       const result = await fetchAndParse('senate');
       
@@ -167,7 +174,7 @@ describe('amendmentParser', () => {
     });
 
     test('should handle axios errors gracefully', async () => {
-      mockedAxios.post.mockRejectedValue(new Error('Network error'));
+      mockPost.mockRejectedValue(new Error('Network error'));
 
       const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
       const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();

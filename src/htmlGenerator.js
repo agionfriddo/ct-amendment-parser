@@ -1,4 +1,4 @@
-const generateHTML = (amendments, chamber) => {
+export const generateHTML = (amendments, chamber) => {
   return `<body>
     <h1>New ${chamber} amendments</h1>
     <table>
@@ -32,5 +32,3 @@ const generateHTML = (amendments, chamber) => {
     </table>
   </body>`;
 };
-
-module.exports = { generateHTML };
