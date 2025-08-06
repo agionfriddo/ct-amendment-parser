@@ -90,8 +90,14 @@ jobs:
           --timeout 300 \
           --memory-size 512
 
-    - name: Publish new version
-      run: |
-        aws lambda publish-version \
-          --function-name ${{ env.LAMBDA_FUNCTION_NAME }} \
-          --description "Deployed from GitHub Actions - $(date '+%Y-%m-%d %H:%M:%S')"
+    # TODO: Uncomment after fixing ResourceConflictException timing issue
+    # - name: Wait for configuration update to complete
+    #   run: |
+    #     aws lambda wait function-updated \
+    #       --function-name ${{ env.LAMBDA_FUNCTION_NAME }}
+    #
+    # - name: Publish new version
+    #   run: |
+    #     aws lambda publish-version \
+    #       --function-name ${{ env.LAMBDA_FUNCTION_NAME }} \
+    #       --description "Deployed from GitHub Actions - $(date '+%Y-%m-%d %H:%M:%S')"
