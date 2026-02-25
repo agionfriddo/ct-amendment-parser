@@ -26,7 +26,7 @@ echo ""
 # Check DynamoDB tables
 echo "📊 Checking DynamoDB tables..."
 
-TABLES=("2025-senate-amendments" "2025-house-amendments" "2025-bills")
+TABLES=("2026-senate-amendments" "2026-house-amendments" "2026-bills")
 for table in "${TABLES[@]}"; do
     if aws dynamodb describe-table --table-name "$table" --region $REGION --no-cli-pager > /dev/null 2>&1; then
         STATUS=$(aws dynamodb describe-table --table-name "$table" --region $REGION --query 'Table.TableStatus' --output text)

@@ -5,9 +5,9 @@ This project uses GitHub Actions to automatically deploy to AWS Lambda when code
 ## Prerequisites
 
 1. **AWS Lambda function** already created with the name `amendmentCron`
-2. **IAM user** with appropriate permissions for Lambda deployment  
+2. **IAM user** with appropriate permissions for Lambda deployment
 3. **GitHub repository secrets** configured
-4. **DynamoDB tables** created (2025-senate-amendments, 2025-house-amendments, 2025-bills)
+4. **DynamoDB tables** created (2026-senate-amendments, 2026-house-amendments, 2026-bills)
 5. **SES email addresses** verified in AWS
 
 ## Verify AWS Resources
@@ -19,8 +19,9 @@ Before setting up GitHub Actions, run the verification script to ensure all AWS 
 ```
 
 This script will check:
+
 - ✅ DynamoDB tables exist and are active
-- ✅ Lambda function exists with correct configuration  
+- ✅ Lambda function exists with correct configuration
 - ✅ IAM roles and permissions are set up
 - ✅ SES is configured with verified email addresses
 
@@ -29,10 +30,12 @@ This script will check:
 Navigate to your repository's Settings > Secrets and variables > Actions, and add these secrets:
 
 ### AWS Credentials
+
 - `AWS_ACCESS_KEY_ID` - AWS access key for deployment user
 - `AWS_SECRET_ACCESS_KEY` - AWS secret key for deployment user
 
 ### Application Environment Variables
+
 - `TO_EMAILS` - Comma-separated list of recipient emails (e.g., `user1@example.com,user2@example.com`)
 - `FROM_EMAIL` - Sender email address (must be verified in AWS SES)
 
@@ -42,19 +45,19 @@ Create an IAM user for GitHub Actions deployment with the following policy:
 
 ```json
 {
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "lambda:UpdateFunctionCode",
-                "lambda:UpdateFunctionConfiguration",
-                "lambda:PublishVersion",
-                "lambda:GetFunction"
-            ],
-            "Resource": "arn:aws:lambda:us-east-1:*:function:amendmentCron"
-        }
-    ]
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "lambda:UpdateFunctionCode",
+        "lambda:UpdateFunctionConfiguration",
+        "lambda:PublishVersion",
+        "lambda:GetFunction"
+      ],
+      "Resource": "arn:aws:lambda:us-east-1:*:function:amendmentCron"
+    }
+  ]
 }
 ```
 
@@ -74,40 +77,37 @@ The Lambda function needs the following IAM role permissions:
 
 ```json
 {
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "dynamodb:Scan",
-                "dynamodb:PutItem",
-                "dynamodb:BatchWriteItem",
-                "dynamodb:GetItem"
-            ],
-            "Resource": [
-                "arn:aws:dynamodb:us-east-1:*:table/2025-senate-amendments",
-                "arn:aws:dynamodb:us-east-1:*:table/2025-house-amendments",
-                "arn:aws:dynamodb:us-east-1:*:table/2025-bills"
-            ]
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
-                "ses:SendEmail",
-                "ses:SendRawEmail"
-            ],
-            "Resource": "*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
-                "logs:CreateLogGroup",
-                "logs:CreateLogStream",
-                "logs:PutLogEvents"
-            ],
-            "Resource": "arn:aws:logs:*:*:*"
-        }
-    ]
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:Scan",
+        "dynamodb:PutItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:GetItem"
+      ],
+      "Resource": [
+        "arn:aws:dynamodb:us-east-1:*:table/2026-senate-amendments",
+        "arn:aws:dynamodb:us-east-1:*:table/2026-house-amendments",
+        "arn:aws:dynamodb:us-east-1:*:table/2026-bills"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": ["ses:SendEmail", "ses:SendRawEmail"],
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:*"
+    }
+  ]
 }
 ```
 
