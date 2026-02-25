@@ -6,7 +6,7 @@ import { processAmendments } from "./src/processAmendments.js";
 import { fetchAndParse } from "./src/amendmentParser.js";
 import { sendEmail } from "./src/mailer.js";
 
-export async function main() {
+export async function handler() {
   console.log("Starting...");
   try {
     const senateAmendments = await fetchAndParse("senate");
@@ -35,5 +35,3 @@ export async function main() {
     console.error(e);
   }
 }
-
-exports.handler = main;
