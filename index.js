@@ -36,6 +36,4 @@ export async function main() {
   }
 }
 
-main();
-
-// this will be here if it worked
+exports.handler = main;
